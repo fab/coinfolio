@@ -4,9 +4,26 @@
     <title>Coinfolio</title>
     <link rel='stylesheet' href='/stylesheets/style.css'>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
+    <script type="text/javascript" src="/javascripts/main.js"></script>
   </head>
   <body>
     <div ng-app>
+      <div ng-controller="MainCtrl">
+        <h1>coinfol.io</h1>
+        <table>
+          <tr>
+            <td>BTC</td>
+            <td><input type="number" ng-model="wallet.btc"></input></td>
+            <td>@ {{usd_to.btc}} USD</td>
+          </tr>
+          <tr>
+            <td>LTC</td>
+            <td><input type="number" ng-model="wallet.ltc"></input></td>
+            <td>@ {{usd_to.ltc}} USD</td>
+          </tr>
+        </table>
+        <h3>Total Value: {{(wallet.btc * usd_to.btc) + (wallet.ltc * usd_to.ltc)}} USD</h3>
+      </div>
     </div>
   </body>
 </html>
