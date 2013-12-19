@@ -1,8 +1,9 @@
-var ngApp = angular.module('coinfolio', [])
+var ngApp = angular.module('coinfolio', ['finance'])
 
-ngApp.controller('MainCtrl', ['$scope', function ($scope) {
+ngApp.controller('MainCtrl', ['$scope', 'currencyConverter',
+  function ($scope, currencyConverter) {
     $scope.wallet = { btc : 0, ltc : 0 }
-    $scope.usdTo = { btc : 1014, ltc : 34 }
+    $scope.usdTo = currencyConverter.usdToCryptocoin
 
     $scope.totalValue = function (wallet, exchangeRates) {
       var total = 0
