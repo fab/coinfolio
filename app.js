@@ -34,6 +34,27 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index)
 app.get('/users', user.list)
+app.get('/rates', function(req, res) {
+  var baseURL = 'http://cryptocoincharts.info/v2/api/tradingPair/(CRYPTO)_usd'
+    , currencies = ['btc', 'ltc', 'ppc']
+    , exchangeRates = {}
+
+  async.map(currencies, function (currency, callback) {
+    var reqURL = baseURL.replace("(CRYPTO)", currency)
+    request(reqURL, function (err, res, body) {
+      callback(null, { body : body, currency : currency })
+    })
+  }, function (err, results) {
+    if (err) throw err
+
+    results.forEach(function (result) {
+      var lastPrice = JSON.parse(result.body).price
+      exchangeRates[result.currency] = lastPrice
+    })
+
+    res.send(exchangeRates)
+  })
+})
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'))

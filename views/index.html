@@ -13,15 +13,10 @@
       <div ng-controller="MainCtrl">
         <h1>coinfol.io</h1>
         <table>
-          <tr>
-            <td>BTC</td>
-            <td><input type="number" ng-model="wallet.btc"></input></td>
-            <td>@ {{usdTo.btc}} USD</td>
-          </tr>
-          <tr>
-            <td>LTC</td>
-            <td><input type="number" ng-model="wallet.ltc"></input></td>
-            <td>@ {{usdTo.ltc}} USD</td>
+          <tr ng-repeat="c in currencies">
+            <td>{{c.toUpperCase()}}</td>
+            <td><input type="number" ng-model="wallet[c]"></input></td>
+            <td>@ {{usdTo[c] | currency}} USD</td>
           </tr>
         </table>
         <h3>Total Value: {{totalValue(wallet, usdTo)}} USD</h3>
