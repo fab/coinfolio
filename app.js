@@ -10,7 +10,6 @@ var http = require('http')
 var path = require('path')
 var ejs  = require('ejs')
 var request = require('request')
-var async = require('async')
 
 var app = express()
 
