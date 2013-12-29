@@ -35,21 +35,21 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/rates', function(req, res) {
-  var baseURL = 'http://cryptocoincharts.info/v2/api/tradingPair/(CRYPTO)_usd'
+  var baseURL = 'http://cryptocoincharts.info/v2/api/tradingPairs'
     , currencies = ['btc', 'ltc', 'ppc']
     , exchangeRates = {}
 
-  async.map(currencies, function (currency, callback) {
-    var reqURL = baseURL.replace("(CRYPTO)", currency)
-    request(reqURL, function (err, res, body) {
-      callback(null, { body : body, currency : currency })
-    })
-  }, function (err, results) {
-    if (err) throw err
+  var reqString = currencies.map(function (currency) {
+    return currency += '_usd'
+  }).join(',')
 
-    results.forEach(function (result) {
-      var lastPrice = JSON.parse(result.body).price
-      exchangeRates[result.currency] = lastPrice
+  request.post(baseURL, { form: { pairs : reqString } }, function (err, response, body) {
+    var responseArray = JSON.parse(body)
+    responseArray.forEach(function (currencyData) {
+      var currencyName = currencyData.id.substr(0, 3)
+        , lastPrice = currencyData.price
+
+      exchangeRates[currencyName] = lastPrice
     })
 
     res.send(exchangeRates)
