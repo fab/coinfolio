@@ -13,6 +13,8 @@ var request = require('request')
 
 var app = express()
 
+var exchangeRates = {}
+
 // all environments
 app.set('port', process.env.PORT || 3000)
 app.set('views', path.join(__dirname, 'views'))
@@ -34,9 +36,12 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index)
 app.get('/users', user.list)
 app.get('/rates', function(req, res) {
+  res.send(exchangeRates)
+})
+
+function getExchangeRates () {
   var baseURL = 'http://cryptocoincharts.info/v2/api/tradingPairs'
     , currencies = ['btc', 'ltc', 'ppc']
-    , exchangeRates = {}
 
   var reqString = currencies.map(function (currency) {
     return currency += '_usd'
@@ -50,10 +55,11 @@ app.get('/rates', function(req, res) {
 
       exchangeRates[currencyName] = lastPrice
     })
-
-    res.send(exchangeRates)
   })
-})
+}
+
+getExchangeRates()
+setInterval(getExchangeRates, 60000)
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'))
